@@ -3,6 +3,7 @@
 # And see https://gohugo.io/getting-started/configuration/ .
 
 baseURL = "http://cztheng.me/"
+#baseURL = "http://127.0.0.1/"
 title = "CZ Theng"
 enableRobotsTXT = true
 enableEmoji = true
@@ -33,24 +34,30 @@ defaultContentLanguage = "en"           # Default language to use
   weight = 10
   identifier = "home"
   url = "/"
+
+[[menu.main]]
+  name = "Categories"
+  weight = 20
+  identifier = "categories"
+  url = "/categories/"
 [[menu.main]]
   name = "Archives"
-  weight = 20
+  weight = 30
   identifier = "archives"
   url = "/post/"
 [[menu.main]]
   name = "Tags"
-  weight = 30
+  weight = 40
   identifier = "tags"
   url = "/tags/"
 [[menu.main]]
-  name = "Categories"
-  weight = 40
-  identifier = "categories"
-  url = "/categories/"
+  name = "About"
+  weight = 50
+  identifier = "about"
+  url = "/about/"
 [[menu.main]]
   name = "OLD"
-  weight = 50
+  weight = 60
   url = "http://czkit.com"
 
 
