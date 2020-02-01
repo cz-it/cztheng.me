@@ -1,0 +1,42 @@
+// ==============================
+// Logo
+// =============================
+
+.logo-wrapper {
+  float: left;
+  padding-left: 15px;
+
+  .logo {
+  	float: left;
+    font-size: $logo-font-size;
+    font-family: $logo-font-family;
+  }
+
+  .img-circle {
+	    border-radius: 50%;
+  }
+
+  .headshot {
+  	padding-top:5px;
+  	float: left;
+    width: 80px;
+    height: 80px;
+  }
+
+  img.center {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .desc {
+  	float: left;
+  	padding-left:10px;
+  	vertical-align:middle;
+  }
+}
+
+@include max-screen() {
+  .logo-wrapper {
+    display: none;
+  }
+}
