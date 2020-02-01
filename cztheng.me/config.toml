@@ -60,7 +60,7 @@ defaultContentLanguage = "en"
 
 
 [params]
-  since = "2017"            
+  since = "2019"            
   homeFullContent = false   
   rssFullContent = true     
 
@@ -74,7 +74,7 @@ defaultContentLanguage = "en"
   # The date format to use; for a list of valid formats, see https://gohugo.io/functions/format/
   dateFormatToUse = "2006-01-02"
 
-  toc = true                                                                            # 是否开启目录
+  toc = true   # 是否开启目录
   photoswipe = true         
   contentCopyright = '<a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>'
 
