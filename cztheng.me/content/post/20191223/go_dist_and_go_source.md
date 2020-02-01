@@ -1,4 +1,13 @@
-# go的发布文件和go源码区别
+---
+title: "go的发布文件和go源码区别"
+date: 2019-12-23T22:07:36+08:00
+categories:
+  - "golang源码"
+tags:
+  - "golang"
+
+description: "go的发布文件和go源码区别,总结来说，是没有什么区别的。就是直接将源码放出来了，加上一些构建的cmd工具和已经构建好的pkg的.a文件"
+---
 
 总结来说，是没有什么区别的。就是直接将源码放出来了，加上一些构建的cmd工具和已经构建好的pkg的.a文件
 
@@ -12,9 +21,11 @@ Mac上可以直接将GOROOT设置到文件目录。
 	git clone https://go.googlesource.com/go
 	git checkout go1.13.5
 
+<!--more-->
+
 然后比较一下：
 
-![目录比较](./diff_go_dir.png)
+![目录比较](../images/diff_go_dir.png)
 
 这里左边的是go的发布包中的，右边的是1.13.5的源码。看到的区别仅有右边的源码目录多了几个.git相关的文件以及左边多出来的bin和pkg目录，其他在src目录
 还有一点不一样。
@@ -23,25 +34,25 @@ Mac上可以直接将GOROOT设置到文件目录。
 
 源码目录中的.git文件不用说，是git相关文件。而bin和pkg则是从源码构建出来的，发布的二进制文件。
 
-![bin目录差别](./diff_go_bin.png)
+![bin目录差别](../images/diff_go_bin.png)
 
 两个最常见的`go`和`gofmt`
 
 
 而pkg里面则是
-![pkg目录差别](./diff_go_pkg.png)
+![pkg目录差别](../images/diff_go_pkg.png)
 
 这里主要是src目录中对应的代码编译生成的.a文件。
 
 ## src差别
 这里选择显示区别后，可以看到src目录下主要有三个目录的差别：
 
-![src目录差别](./diff_go_src.png)
+![src目录差别](../images/diff_go_src.png)
 
 ### 1. cmd
 点开cmd:
 
-![cmd区别](./diff_go_src_cmd.png)
+![cmd区别](../images/diff_go_src_cmd.png)
 
 主要有三个文件，每个文件的开头都是：
 
@@ -52,7 +63,7 @@ Mac上可以直接将GOROOT设置到文件目录。
 ### 2. go
 go目录只有一个文件的差别：
 
-![go区别](./diff_go_src_go.png)
+![go区别](../images/diff_go_src_go.png)
 
 这个文件也是cmd/dist/dist工具生成的不同平台在cgo上的差别。
 
@@ -60,7 +71,7 @@ go目录只有一个文件的差别：
 ### 3. runtime
 最后来看到runtime，这里发布文件多了个zversion.go，而源码中则是多了几个不同平台的文件
 
-![runtime区别](./diff_go_src_runtime.png)
+![runtime区别](../images/diff_go_src_runtime.png)
 
 race在不同的平台上的syso系统库不一样，在具体的发布平台上也就不需要这个文件了。
 
