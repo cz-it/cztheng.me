@@ -1,14 +1,25 @@
-# First-Class Functions in Go
+---
+title: "First-Class Functions in Go"
+date: 2019-12-25T22:07:36+08:00
+categories:
+  - "奇技淫巧"
+tags:
+  - "golang"
+
+description: "在Golang的定义中，就将函数类型和普通类型划分成一类类型。也就是说Golang是支持 First-Class Functions的"
+---
 
 在Golang的[Language Spec](https://docs.golang.org/ref/spec)中的目录中是这样分类的：
 
 
-![spec](./images/spec_function.png)
+![spec](../images/spec_function.png)
 
 其中将"Function"分列在“Types”的分类中，也就是说，在Golang中，函数是和字符串、
 数组、指针等一样为一等公民，也就是所谓的“First-Class”类型。既然是类型的一种
 ，所以就可以将它和数字、字符串一样赋值给变量，同样的也可以将其作为参数传递给
 函数或者其他变量甚至作为函数的返回值。
+
+<!--more-->
 
 ## 1. 函数类型的使用
 上面说了，在Golang的定义中，就将函数类型和普通类型划分成一类类型。也就是说Golang是支持
@@ -21,6 +32,7 @@
 
 其中，虽然将“Closures”单列出来，实际上其也是“Anonymous functions”的中一种，只是在其他
 语言中对这类用法都有专门的名词称谓，因此这里将其单列开来。
+
 
 ### 2.1 匿名函数类型
 匿名函数，顾名思义，就是没有名字的函数。在Golang的世界里面也有另一个名词：“function literals”
