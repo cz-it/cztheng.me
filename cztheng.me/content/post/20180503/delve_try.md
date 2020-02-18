@@ -2,7 +2,7 @@
 title: "Debug Golang With Delve"
 date: 2018-05-03T22:07:36+08:00
 categories:
-  - "golang"
+  - "工程实践"
 tags:
   - "debug"
   - "golang"

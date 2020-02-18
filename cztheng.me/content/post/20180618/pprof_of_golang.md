@@ -2,7 +2,7 @@
 title: "pprof of golang"
 date: 2018-06-18T22:07:36+08:00
 categories:
-  - "golang"
+  - "工程实践"
 tags:
   - "pprof"
   - "golang"

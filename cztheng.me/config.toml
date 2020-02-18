@@ -60,7 +60,7 @@ defaultContentLanguage = "en"
 
 
 [params]
-  since = "2019"            
+  since = "2018"            
   homeFullContent = false   
   rssFullContent = true     
 
