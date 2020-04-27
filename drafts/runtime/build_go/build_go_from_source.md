@@ -114,20 +114,27 @@ go编译的工具链"toolchain",类似组合成gcc命令集中的 "as","gcc","ld
 
 表示构建成功，在"/Users/you/gosrc/go/bin"目录就可以看到构建好的go和gofmt工具了。同时在"/Users/you/gosrc/go/pkg/tool"目录下还可以看到"go tool" 的子工具。
 
-那么这个all.bash脚本具体干了什么事情呢？实际上，其仅仅是调用了make.bash。而make.bash里面则实际上执行了：
+那么这个all.bash脚本具体干了什么事情呢？实际上，其仅仅是调用了make.bash。
 
-    ...
-    GOROOT="$GOROOT_BOOTSTRAP" GOOS="" GOARCH="" GO111MODULE=off "$GOROOT_BOOTSTRAP/bin/go" build -o cmd/dist/dist ./cmd/dis
-    ...
-    ./cmd/dist/dist bootstrap $buildall $vflag $GO_DISTFLAGS "$@
+### 1. 构建dist
 
-逻辑上就是先用现有的go来构建"cmd/dist/dist" ，然后在执行 "./cmd/dist/dist bootstrap"
-
-前者比较容易理解，就和一个普通的go程序一样，使用的是你机器上原本安装好的go来构建的，要求版本>=1.4。实际上
+在make.bash中，首先和一个普通的go程序一样，使用的是你机器上原本安装好的go来构建dist，要求版本>=1.4。实际上
 这里的原理是将一些脚本通过go来实现了，这样减少了针对不同的平台编写复杂的构建脚本的问题。这里的dist就相当于是go
 的构建脚本。
 
+	  ...
+    GOROOT="$GOROOT_BOOTSTRAP" GOOS="" GOARCH="" GO111MODULE=off "$GOROOT_BOOTSTRAP/bin/go" build -o cmd/dist/dist ./cmd/dis
+    ...
+
+和构建普通的go程序一样，设定好GOROOT、GOOS、GOARCH然后进行 `go build`。
+
+### 2. 构建toolchain
+
 dist的入口在go/src/cmd/dist/main.go中，一个完整的可执行程序，那么来看下这个脚本执行 bootstrap 时干了什么。
+
+    ...
+    ./cmd/dist/dist bootstrap $buildall $vflag $GO_DISTFLAGS "$@
+    ...
 
 当传入boostrap参数时，调用了`cmdbootstrap`方法，来看go/src/cmd/dist/build.go文件：
 
@@ -146,14 +153,37 @@ dist的入口在go/src/cmd/dist/main.go中，一个完整的可执行程序，�
     // that setting, not the new one.
     func cmdbootstrap() 
 
+
+
 这里看关键代码，首先定义了toolchain的组成：
 
     var toolchain = []string{"cmd/asm", "cmd/cgo", "cmd/compile", "cmd/link"}
+    
+然后做了一次文件移位，在文件go/src/cmd/dist/buildtool.go中的函数：
 
-然后构建toolchain,在 go/src/cmd/dist/buildtoo.go中：
 
+   func bootstrapBuildTools() {
+   		...
+   		
+			workspace := pathf("%s/pkg/bootstrap", goroot)
+			xremoveall(workspace)
+			xatexit(func() { xremoveall(workspace) })
+			base := pathf("%s/src/bootstrap", workspace)
 
-    func bootstrapBuildTools() {
+			src := pathf("%s/src/%s", goroot, dir)
+			dst := pathf("%s/%s", base, dir)
+
+			srcFile := pathf("%s/%s", src, name)
+			dstFile := pathf("%s/%s", dst, name)
+			text := bootstrapRewriteFile(srcFile)
+			writefile(text, dstFile, 0)  
+			
+这里创建了"go/pkg/bootstrap/src/bootstrap" 目录，然后将bootstrapDirs数组中定义的目录文件都copy了过去。
+为何要copy过去呢？因为针对具体的平台，还生成了一些平台特有的文件，比如"zdefaultcc.go"，为了不污染源文件，所以
+另外放了一个新位置。
+
+接着就在这个新的文件位置进行构建toolchain, 
+
         ...
         cmd := []string{
             pathf("%s/bin/go", goroot_bootstrap),
@@ -170,17 +200,73 @@ dist的入口在go/src/cmd/dist/main.go中，一个完整的可执行程序，�
         cmd = append(cmd, "bootstrap/cmd/...")
         ...
 
-实际上就是 ：
+实际上在新的"go/pkg/bootstrap/src/bootstrap"目录中进行 ：
 
     go install cmd/asm
     go install cmd/cgo
     go install cmd/compile
     go install cmd/link
 
+### 3. 构建go_bootstrap
 
+在回到go/src/cmd/dist/build.go文件中，
 
+	install("runtime") // dependency not visible in sources; also sets up textflag.h
+	install("cmd/go")
+	
+其中install的实现有点长，这里可以理解为，先用上面的cmd/compile,cmd/asm编译出runtime的库，然后再
+编译出cmd/go二进制程序，这个cmd/go也就是我们通常意义上的go命令。这里改名成了go_bootstrap。
 
+也就是这一步，用toolchain构建出了go_bootstrap
 
+### 4. 重新构建toolchain
+
+前面说了，toolchain是由你自己机器上已经安装好的go命令及其对应的toolchain构建出来的，所以如果你对应的go
+版本比较老的话，那么toolchain也就携带了老版本的问题，所以这里又用新构建出来的 go_boostrap和新代码对应
+的toolchain（这里称之为toolchain1)来重新构建toolchain:
+
+		// To recap, so far we have built the new toolchain
+		// (cmd/asm, cmd/cgo, cmd/compile, cmd/link)
+		// using Go 1.4's toolchain and go command.
+		// Then we built the new go command (as go_bootstrap)
+		// using the new toolchain and our own build logic (above).
+		//
+		//	toolchain1 = mk(new toolchain, go1.4 toolchain, go1.4 cmd/go)
+		//	go_bootstrap = mk(new cmd/go, toolchain1, cmd/dist)
+		//
+		// The toolchain1 we built earlier is built from the new sources,
+		// but because it was built using cmd/go it has no build IDs.
+		// The eventually installed toolchain needs build IDs, so we need
+		// to do another round:
+		//
+		//	toolchain2 = mk(new toolchain, toolchain1, go_bootstrap)
+		//
+		timelog("build", "toolchain2")
+		if vflag > 0 {
+			xprintf("\n")
+		}
+		xprintf("Building Go toolchain2 using go_bootstrap and Go toolchain1.\n")
+		os.Setenv("CC", compilerEnvLookup(defaultcc, goos, goarch))
+		goInstall(goBootstrap, append([]string{"-i"}, toolchain...)...)
+
+编译出来的产物，称之为toolchain2以示区别。
+
+在dist里面，除了上面的toolchain2，他又用toolchain2和对应的go_boostrap构建了一遍toolchain，称之toolchain3,
+作为最终发布的toolchain。
+
+### 构建库和其他工具
+在准备好了toolchain和对应的go命令后，就开始构建标准库和其他的go tool了：
+
+	targets := []string{"std", "cmd"}
+		if goos == "js" && goarch == "wasm" {
+			// Skip the cmd tools for js/wasm. They're not usable.
+			targets = targets[:1]
+		}
+		goInstall(goBootstrap, targets...)
+		
+最后将go和gofmt放入到 "go/bin"目录下。将其他go tool 子命令放入"go/pkg/tool/os_arch"目录下。
+
+这样就完成了go的构建。
 
 
 ## 使用自己构建的go
