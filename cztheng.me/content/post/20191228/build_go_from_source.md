@@ -1,4 +1,14 @@
-# 使用go编译go
+---
+title: "使用go编译go"
+date: 2019-12-28T22:07:36+08:00
+categories:
+  - "golang源码"
+tags:
+  - "golang"
+
+description: "Go从1.4之后，开始实现自举，也就是可以自己编译自己，具体是什么意思呢？通俗的来说就是Go的编译逻辑都切换成Go来写的了"
+---
+
 Go从1.4之后，开始实现自举，也就是可以自己编译自己，具体是什么意思呢？通俗的来说就是Go的编译逻辑都切换成Go来写的了
 并且可以通过之前的版本的Go（>=Go1.4)来构建出Go的编译工具链， 打开一个编译好二进制的go的发布包，比如
 [1.13.5](https://dl.google.com/go/go1.13.5.darwin-amd64.tar.gz) 解压后会看到go/bin目录为：
@@ -32,6 +42,8 @@ Go从1.4之后，开始实现自举，也就是可以自己编译自己，具体
         ├── trace
         └── vet
 
+<!--more-->        
+
 这里可以看到一系列的 `go tool xxx` 的子命令。而其中在上面列出的"asm"、"cgo"、"compile"、"link" 则构成了
 go编译的工具链"toolchain",类似组合成gcc命令集中的 "as","gcc","ld" 
 
@@ -42,6 +54,9 @@ go编译的工具链"toolchain",类似组合成gcc命令集中的 "as","gcc","ld
 |link|ld| 连接器|
 
 其中cgo是专门处理go和c混编的。
+
+
+
 
 ## 编译工具链
 在Rob Pike设计Go的汇编的[GopherCon 2016: Rob Pike - The Design of the Go Assembler](https://www.youtube.com/watch?v=KINIAgRpkDA)演讲中，说到了一个语言的构建工具toolchain一般的结构：
