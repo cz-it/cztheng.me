@@ -27,13 +27,13 @@ description: "当执行 go build 的时候，go会根据需要，索引当前需
 类似Java、Scala、Python这类语言，代码有个中间语言，比如JVM的字节码、Python的字节码pyc文件等。
 其执行过程是先启动一个虚拟机，然后在用虚拟机去执行中间结果字节码：
 
-![](images/jvm.png)
+![](../images/jvm.png)
 
 Go没有类似Java/Python的虚拟机，而是和OC类似，每个可执行文件中 编译进去了一个runtime库，这个runtime
 包含了GC内存管理、Groutine调度、系统调用等等功能。并且由于runtime的存在，一个Go编译的可执行文件，其甚至不依赖
 libc库。Go编译的可执行文件可以认为由着几个部分组成：
 
-![](images/go.png)
+![](../images/go.png)
 
 
 ## HelloWorld 可执行文件
@@ -293,7 +293,7 @@ ELF文件:
 暂且不用了解详细语法，大概意义是:做完一些准备工作后，跳转到ok的token，然后依次执行 runtime·args、runtime·osinit、
 runtime·schedinit，最后通过	runtime·newproc来启一个Goroutine运行runtime·mainPC。
 
-![](./images/bootstrap.png)
+![](../images/bootstrap.png)
 
 这里如果全文去搜"mainPC",可能会发现找不到定义，其实是：
 

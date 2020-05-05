@@ -61,7 +61,7 @@ go编译的工具链"toolchain",类似组合成gcc命令集中的 "as","gcc","ld
 ## 编译工具链
 在Rob Pike设计Go的汇编的[GopherCon 2016: Rob Pike - The Design of the Go Assembler](https://www.youtube.com/watch?v=KINIAgRpkDA)演讲中，说到了一个语言的构建工具toolchain一般的结构：
 
-![](images/toolchain_gcc.png)
+![](../images/toolchain_gcc.png)
 
 是包含着三个部分：
 
