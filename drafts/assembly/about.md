@@ -13,7 +13,7 @@
 ### 主流汇编器
 
 * MASM : windows上的主流，微软提供
-* NASM : linux世界的masm
+* NASM/YASM : linux世界的masm
 * AS : GNU的汇编器，采用AT&T语法
 
 ### AMD64汇编
