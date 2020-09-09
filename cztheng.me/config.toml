@@ -7,7 +7,7 @@ baseURL = "http://cztheng.me/"
 title = "CZ Theng"
 enableRobotsTXT = true
 enableEmoji = true
-theme = "jane"
+theme = "cz-jane"
 
 
 hasCJKLanguage = true     
