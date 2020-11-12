@@ -7,4 +7,4 @@ cp -rf ../www/about_cz/index.html ../www/about
 cp -rf ../logo.png ../www/images
 cp -rf ../favicon.png ../www
 cp -rf ../favicon.png ../www/favicon.ico
-
+pip install lxml
