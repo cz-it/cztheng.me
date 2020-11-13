@@ -15,7 +15,7 @@ paginate = 5
 copyright = "CZ Theng"    
 
 [RSS]
-  limit:10
+  limit=10
 
 # language support # en / zh-cn / other... translations present in i18n/
 defaultContentLanguage = "en"           
