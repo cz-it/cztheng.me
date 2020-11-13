@@ -62,7 +62,6 @@ defaultContentLanguage = "en"
 [params]
   since = "2018"            
   homeFullContent = false   
-  rssFullContent = true     
 
 
   # site info (optional) 
