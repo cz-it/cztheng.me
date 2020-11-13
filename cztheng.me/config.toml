@@ -12,6 +12,7 @@ theme = "cz-jane"
 
 hasCJKLanguage = true     
 paginate = 5              
+rssLimit = 10
 copyright = "CZ Theng"    
 
 # language support # en / zh-cn / other... translations present in i18n/
