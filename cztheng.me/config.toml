@@ -2,7 +2,7 @@
 # If you want to see the full configuration, please check `full-config.toml` .
 # And see https://gohugo.io/getting-started/configuration/ .
 
-baseURL = "http://cztheng.me/"
+baseURL = "http://cztheng.com/"
 #baseURL = "http://127.0.0.1/"
 title = "CZ Theng"
 enableRobotsTXT = true
@@ -56,10 +56,6 @@ defaultContentLanguage = "en"
   weight = 50
   identifier = "about"
   url = "/about/"
-[[menu.main]]
-  name = "OLD"
-  weight = 60
-  url = "http://czkit.com"
 
 
 [params]
